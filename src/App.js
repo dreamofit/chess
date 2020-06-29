@@ -38,6 +38,11 @@ export default class app extends Component {
     let l = -36;
     return (
       <div style={Style.all}>
+        <div style={{...Style.blackPoint,top:124,left:124}}></div>
+        <div style={{...Style.blackPoint,top:124,left:412}}></div>
+        <div style={{...Style.blackPoint,top:412,left:124}}></div>
+        <div style={{...Style.blackPoint,top:412,left:412}}></div>
+        <div style={{...Style.blackPoint,top:268,left:268}}></div>
         {
           chess.map((set,index)=>{
             return <LineChess nextStep={this.nextStep} y={index} set={set} top={10+index*36}></LineChess>

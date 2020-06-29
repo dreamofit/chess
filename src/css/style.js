@@ -65,6 +65,15 @@ const white = {
     borderRadius:100
 }
 
+const blackPoint = {
+    position:"absolute",
+    zIndex:900,
+    width:10,
+    height:10,
+    background:"#000",
+    borderRadius:100
+}
+
 export default {
     all,
     checkerboard,
@@ -72,5 +81,6 @@ export default {
     VerticalLine,
     allChess,
     black,
-    white
+    white,
+    blackPoint
 }
