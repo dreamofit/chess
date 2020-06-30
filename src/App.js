@@ -238,6 +238,7 @@ export default class app extends Component {
       enemy = 2;
     }
     let positionScore = this.positionScore(x,y);
+    //console.log("x:"+x+" y:"+y);
     chess[y][x] = player;
     let attackScore = this.getCurrentScore(x,y,player,chess);
     chess[y][x] = enemy;
@@ -274,6 +275,18 @@ export default class app extends Component {
       }
       temp[y][x] = 1;
     }
+    let isDraw = true;
+    for(let i=0;i<15;i++){
+      for(let j=0;j<15;j++){
+        if(chess[i][j]===0){
+          isDraw = false;
+          break;
+        }
+      }
+    }
+    if(isDraw){
+      this.setState({isGameOver:true,winner:"和棋"})
+    }
     this.setState({ chess: temp, currentStep: currentStep + 1 });
   }
 
@@ -282,28 +295,29 @@ export default class app extends Component {
     if(isGameOver){
       return;
     }
-    this.nextStep(x,y);
+    //this.nextStep(x,y);
+    this.easyAI(1);
     setTimeout(() => {
-      this.easyAI();
-    }, 1000);
+      this.easyAI(2);
+    }, 10);
     
   }
 
-  easyAI = () => { //简单智能，控制黑子
+  easyAI = (player) => { //简单智能
     const {border,chess} = this.state;
-    let max = {s:-1,x:-1,y:-1};
+    let max = {s:-1000000,x:-1,y:-1};
     for(let j=border.top;j<=border.bottom;j++){
       for(let i=border.left;i<=border.right;i++){
         //计算(i,j)点的得分,并与max进行比较，超过则替换
         if(chess[j][i]===0){
-          let s = this.allScore(i,j,2,chess).sum;
+          let s = this.allScore(i,j,player,chess).sum;
           if(s>max.s){
             max.s = s;
             max.x = i;
             max.y = j;
           }else if(s===max.s){ //处理一样的情况，随机选择
             let rand = Math.round(Math.random()*100); 
-            if(rand<=50){
+            if(rand<30){
               max.s = s;
               max.x = i;
               max.y = j;
@@ -312,7 +326,9 @@ export default class app extends Component {
         }
       }
     }
-    console.log("x:"+max.x+" y:"+max.y);
+    if(max.x===-1||max.y===-1){
+      return;
+    }
     this.nextStep(max.x,max.y);
   }
 
