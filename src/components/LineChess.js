@@ -22,11 +22,11 @@ export default class LineChess extends Component {
             <div>
                 {
                     set.map((data,index)=>{
-                        if(data==0){
+                        if(data===0){
                             return <div onClick={this.nextStep.bind(this,index)} style={{...Style.allChess,top:top,left:10+index*36}}></div>
-                        }else if(data==1){
+                        }else if(data===1){
                             return <div style={{...Style.white,top:top,left:10+index*36}}></div>
-                        }else if(data==2){
+                        }else if(data===2){
                             return <div style={{...Style.black,top:top,left:10+index*36}}></div>
                         }
                     })
