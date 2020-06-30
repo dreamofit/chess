@@ -4,16 +4,12 @@ export default class LineChess extends Component {
 
     constructor(props){
         super(props);
-        this.state={
-
-        }
     }
 
-    nextStep = (index) => {
-        let currentStep = this.props.currentStep;
+    eventClick = (index) => {
         let x = index;
         let y = this.props.y;
-        this.props.nextStep(x,y);
+        this.props.eventClick(x,y);
     }
 
     render() {
@@ -23,12 +19,13 @@ export default class LineChess extends Component {
                 {
                     set.map((data,index)=>{
                         if(data===0){
-                            return <div onClick={this.nextStep.bind(this,index)} style={{...Style.allChess,top:top,left:10+index*36}}></div>
+                            return <div key={index} onClick={this.eventClick.bind(this,index)} style={{...Style.allChess,top:top,left:10+index*36}}></div>
                         }else if(data===1){
-                            return <div style={{...Style.white,top:top,left:10+index*36}}></div>
+                            return <div key={index} style={{...Style.white,top:top,left:10+index*36}}></div>
                         }else if(data===2){
-                            return <div style={{...Style.black,top:top,left:10+index*36}}></div>
+                            return <div key={index} style={{...Style.black,top:top,left:10+index*36}}></div>
                         }
+                        return true;
                     })
                 }
             </div>

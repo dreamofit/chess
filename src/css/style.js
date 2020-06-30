@@ -73,6 +73,17 @@ const blackPoint = {
     borderRadius:100
 }
 
+const gameOver = {
+    position:"absolute",
+    zIndex:1000,
+    left:182,
+    top:220,
+    textAlign:"center",
+    lineHeight:6,
+    color:"#7C4DFF",
+    background:"RGB(239, 154, 154)"
+}
+
 export default {
     all,
     checkerboard,
@@ -81,5 +92,6 @@ export default {
     allChess,
     black,
     white,
-    blackPoint
+    blackPoint,
+    gameOver
 }
