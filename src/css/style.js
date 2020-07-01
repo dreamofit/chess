@@ -52,6 +52,10 @@ const black = {
     height:20,
     background:"#000",
     border:"1px #757575 solid",
+    textAlign:"center",
+    alignItems: 'center',
+    lineHeight:2,
+    fontSize:10,
     borderRadius:100
 }
 const white = {
@@ -61,6 +65,10 @@ const white = {
     height:20,
     background:"#FFFFFF",
     border:"1px #757575 solid",
+    textAlign:"center",
+    lineHeight:2,
+    fontSize:10,
+    alignItems: 'center',
     borderRadius:100
 }
 
@@ -79,9 +87,19 @@ const gameOver = {
     left:182,
     top:220,
     textAlign:"center",
-    lineHeight:6,
-    color:"#7C4DFF",
-    background:"RGB(239, 154, 154)"
+    lineHeight:3,
+    color:"#FF1744",
+    fontSize:30,
+    background:"RGB(198, 255, 0,0.5)"
+}
+
+const label_1 = {
+    position:"absolute",
+    left:540,
+    top:20,
+    fontSize:22,
+    color:"#FFFFFF",
+    cursor:"pointer"
 }
 
 export default {
@@ -93,5 +111,6 @@ export default {
     black,
     white,
     blackPoint,
-    gameOver
+    gameOver,
+    label_1
 }

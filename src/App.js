@@ -27,7 +27,8 @@ export default class app extends Component {
         DEAD: -5, //不能形成5个子
       }, //这里评分规则考虑了双活三、双冲4、活三冲4、活4等必胜组合棋形
       isGameOver:false,
-      winner:""
+      winner:"",
+      orderTable:[] ,//记录每次落子的坐标{x，y}
     }
   }
 
@@ -240,9 +241,9 @@ export default class app extends Component {
     let positionScore = this.positionScore(x,y);
     //console.log("x:"+x+" y:"+y);
     chess[y][x] = player;
-    let attackScore = this.getCurrentScore(x,y,player,chess);
+    let attackScore = this.getCurrentScore(x,y,player,chess)+1;
     chess[y][x] = enemy;
-    let defendScore = this.getCurrentScore(x,y,enemy,chess);
+    let defendScore = this.getCurrentScore(x,y,enemy,chess)-1;
     let score = {
       positionScore:positionScore,
       attackScore:attackScore,
@@ -257,20 +258,29 @@ export default class app extends Component {
     return score;
   }
 
+  orderTableChange = (x,y) => {
+    let orderTable = this.state.orderTable;
+    let point = {x:x,y:y};
+    orderTable.push(point);
+    this.setState({orderTable});
+  }
+
   nextStep = (x, y) => {
     this.borderChange(x, y);
-    const { currentStep, chess , SCORESHEET ,isGameOver , winner } = this.state;
+    this.orderTableChange(x,y);
+    const { currentStep, chess , SCORESHEET , winner } = this.state;
+    let isGameOver = this.state.isGameOver;
     let temp = chess;
     
     if (currentStep % 2 === 0) {  
       if(this.allScore(x, y, 2,temp).attackScore>=SCORESHEET.PERFECT){
-        
+        isGameOver = true;
         this.setState({isGameOver:true,winner:"黑方获胜"});
       }
       temp[y][x] = 2;
     } else {
       if(this.allScore(x, y, 1,temp).attackScore>=SCORESHEET.PERFECT){
-        console.log("白子获胜");
+        isGameOver = true;
         this.setState({isGameOver:true,winner:"白方获胜"});
       }
       temp[y][x] = 1;
@@ -288,6 +298,7 @@ export default class app extends Component {
       this.setState({isGameOver:true,winner:"和棋"})
     }
     this.setState({ chess: temp, currentStep: currentStep + 1 });
+    return isGameOver;
   }
 
   eventClick = (x,y) => {
@@ -295,12 +306,25 @@ export default class app extends Component {
     if(isGameOver){
       return;
     }
-    //this.nextStep(x,y);
+    if(this.nextStep(x,y)){
+      return;
+    }else{
+      setTimeout(() => {
+        this.easyAI(2);
+      }, 50);
+    }
+    
+  }
+
+  help = () => {
+    const {isGameOver} = this.state;
+    if(isGameOver){
+      return;
+    }
     this.easyAI(1);
     setTimeout(() => {
       this.easyAI(2);
     }, 10);
-    
   }
 
   easyAI = (player) => { //简单智能
@@ -333,7 +357,7 @@ export default class app extends Component {
   }
 
   render() {
-    const { chess, num , winner ,isGameOver } = this.state;
+    const { chess, num , winner ,isGameOver , orderTable } = this.state;
     let width = 0;
     let height = 0;
     if(isGameOver){
@@ -349,7 +373,7 @@ export default class app extends Component {
         <div style={{ ...Style.blackPoint, top: 268, left: 268 }}></div>
         {
           chess.map((set, index) => {
-            return <LineChess key={index} eventClick={this.eventClick} y={index} set={set} top={10 + index * 36}></LineChess>
+            return <LineChess orderTable={orderTable} key={index} eventClick={this.eventClick} y={index} set={set} top={10 + index * 36}></LineChess>
 
           })
         }
@@ -367,6 +391,7 @@ export default class app extends Component {
           }
         </div>
         <div style={{...Style.gameOver,width:width,height:height}}>{winner}</div>
+        <div style={{...Style.label_1}} onClick={this.help}>{"求助AI"}</div>
       </div>
     )
   }
