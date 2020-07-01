@@ -18,7 +18,7 @@ export default class app extends Component {
       }, //边界左、上、右、下(中心减加4)
       SCORESHEET: {
         PERFECT: 1000000, //五子长连获胜
-        LIVE_4: 10000, //活4
+        LIVE_4: 11000, //活4
         RUSH_4: 5000, //冲4
         LIVE_3: 5000, //活3
         SLEEP_3: 300, //眠3
@@ -229,21 +229,37 @@ export default class app extends Component {
     let vs = this.oneLineScore(vertical, player);
     let ss = this.oneLineScore(skim,player);
     let ps = this.oneLineScore(poke,player);
-    let score = hs+vs+ss+ps;
+    let score = {
+      hs:hs,
+      vs:vs,
+      ss:ss,
+      ps:ps,
+      sum:hs+vs+ss+ps
+    };
     return score;
   }
 
   allScore = (x,y,player,chess) => { //综合得分，包括攻击分、防守分、位置分
+    //需要修改进攻分与防守分，若进攻为活四、长连则增加100000，若防守为活四增加90000（若长连则防守不了，优先自己进攻，以我方进攻为主）
     let enemy = 1;
     if(player===1){
       enemy = 2;
     }
+    const SCORESHEET = this.state.SCORESHEET;
     let positionScore = this.positionScore(x,y);
     //console.log("x:"+x+" y:"+y);
     chess[y][x] = player;
-    let attackScore = this.getCurrentScore(x,y,player,chess)+1;
+    let attack = this.getCurrentScore(x,y,player,chess);
+    let attackScore = attack.sum;
+    if(attack.hs>=SCORESHEET.LIVE_4||attack.ps>=SCORESHEET.LIVE_4||attack.ss>=SCORESHEET.LIVE_4||attack.vs>=SCORESHEET.LIVE_4){
+      attackScore+=100000;
+    }
     chess[y][x] = enemy;
-    let defendScore = this.getCurrentScore(x,y,enemy,chess)-1;
+    let defend = this.getCurrentScore(x,y,enemy,chess);
+    let defendScore = defend.sum;
+    if(defend.hs===SCORESHEET.LIVE_4||defend.ps===SCORESHEET.LIVE_4||defend.ss===SCORESHEET.LIVE_4||defend.vs===SCORESHEET.LIVE_4){
+      defendScore+=90000;
+    }
     let score = {
       positionScore:positionScore,
       attackScore:attackScore,
