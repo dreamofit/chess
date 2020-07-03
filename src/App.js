@@ -30,7 +30,7 @@ export default class app extends Component {
       isGameOver: false,
       winner: "",
       orderTable: [],//记录每次落子的坐标{x，y}
-      level: 3, //搜索深度，暂定为7.单数为己方
+      level: 8, //搜索深度，暂定为8
     }
   }
 
@@ -396,39 +396,12 @@ export default class app extends Component {
         }
       }
     }
-    // for(let i=0;i<res.length;i++){
-    //   console.log(res[i].s);
-    // }
     return res;
   }
 
   easyAI = (player) => { //简单智能
     const { chess } = this.state;
     let max = [];
-    // for (let j = border.top; j <= border.bottom; j++) {
-    //   for (let i = border.left; i <= border.right; i++) {
-    //     //计算(i,j)点的得分,并与max进行比较，超过则替换
-    //     if (chess[j][i] === 0) {
-    //       let s = this.allScore(i, j, player, chess).sum;
-    //       if (s > max.s) {
-    //         max.s = s;
-    //         max.x = i;
-    //         max.y = j;
-    //       } else if (s === max.s) { //处理一样的情况，随机选择
-    //         let rand = Math.round(Math.random() * 100);
-    //         if (rand < 30) {
-    //           max.s = s;
-    //           max.x = i;
-    //           max.y = j;
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-    // if (max.x === -1 || max.y === -1) {
-    //   return;
-    // }
-
     let res = this.getOrderScore(chess,player);
     if (res.length < 1) {
       return;
@@ -460,35 +433,19 @@ export default class app extends Component {
 
   alpha_beta = (depth, border, temp, pos,k, player, enemy, alpha, beta) => { //αβ剪枝算法
    
-    //let temp = this.clone(chess);
-    //console.log("depth:"+depth);
-    //const level = this.state.level; //搜索深度
-    const {SCORESHEET} = this.state;
-    const level = 8;
-    //console.log("border:"+border[k].s+" x:"+border[k].x+" y:"+border[k].y);
+    const {SCORESHEET,level} = this.state;
+    
     if(border[k].s>=SCORESHEET.PERFECT){
       let p = { x: border[k].x, y: border[k].y };
       pos.push(p);
       return depth % 2 !== 0 ? alpha : beta;
     }
     if (depth === level) {
-      //let m = temp[x][y];
-      //temp[x][y] = 0;
-      //console.log("1");
-
       let sc = this.allScore(border[k].x, border[k].y, player, temp);
-      //temp[x][y] = m;
-      //console.log("temp:" + temp);
-      //console.log("x:"+x+" y:"+y);
-      //console.log("score:"+sc.sum+"     p:"+sc.positionScore+" a:"+sc.attackScore+" d:"+sc.defendScore);
-      //if(sc.sum>=7){
-      //console.log("x:"+x+" y:"+y);
-      //console.log("score:"+sc.sum+"     p:"+sc.positionScore+" a:"+sc.attackScore+" d:"+sc.defendScore);
-      //}
       return sc.sum; //返回什么呢？当前位置得分
     }
     
-    for (let i = 0; i < border.length&&i<=(17-level); i++) {
+    for (let i = 0; i < border.length&&i<=(19-level); i++) {
       if (temp[border[i].y][border[i].x] === 0) {
         if (depth % 2 !== 0) {
           temp[border[i].y][border[i].x] = player;
@@ -536,9 +493,6 @@ export default class app extends Component {
     if(player===1){
       enemy = 2;
     }
-    // for(let k=0;k<border.length;k++){
-    //   console.log("K:"+border[k].s);
-    // }
     let pos = [];
     if(border.length<=0){
       return;
